@@ -1,0 +1,11 @@
+---
+# defaults file for roles/frostpos
+
+git_url: 'https://github.com/kryp7ik/Frost.git'
+frost_version: '1.0'
+pos_domain: 'frostpos.com'
+site_root: "/var/www/{{ pos_domain }}"
+
+# User and Group for file ownership
+user: 'frost'
+group: 'frost'

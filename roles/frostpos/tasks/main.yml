@@ -1,0 +1,54 @@
+---
+# tasks file for roles/frostpos
+
+- name: create default site configurations
+  template:
+    src: "frost-vhost.conf.j2"
+    dest: "/etc/nginx/sites-available/{{ pos_domain }}.conf"
+    mode: 0644
+
+- name: enable default site
+  file:
+    path: "/etc/nginx/sites-enabled/{{ pos_domain }}.conf"
+    src: "/etc/nginx/sites-available/{{ pos_domain }}.conf"
+    state: link
+  notify:
+    - reload nginx service
+
+- name: cloning git repo
+  git:
+    repo: "{{ git_url }}"
+    dest: '/tmp'
+    version: "{{ frost_version }}"
+
+- name: moving files to website root
+  command: 'mv /tmp/Frost {{ site_root }}'
+
+- name: creating store config file
+  template:
+    src: 'store.php.j2'
+    dest: '{{ site_root }}/config/store.php'
+    owner: '{{ user }}'
+    group: '{{ group }}'
+    mode: 0644
+
+- name: running composer install and npm install
+  command: 'composer install && npm install'
+  args:
+    chdir: '{{ site_root }}'
+
+- name: setting permissions
+  command: 'chown -R {{ user }}:{{ group }} {{ site_root }}'
+  command: 'find {{ site_root }} -type f -exec chmod 644 {} \;'
+  command: 'find {{ site_root }} -type d -exec chmod 755 {} \;'
+  command: 'chmod -R ug+rwx {{ site_root }}/storage {{ site_root }}/bootstrap/cache'
+
+- name: creating env file
+  template:
+    src: 'env.j2'
+    dest: '{{ site_root }}/.env'
+    owner: '{{ user }}'
+    group: '{{ group }}'
+    mode: 0660
+
+- name: starting nodejs socket server with pm2

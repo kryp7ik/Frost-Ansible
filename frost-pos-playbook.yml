@@ -1,0 +1,13 @@
+---
+- hosts: all
+  remote_user: ec2-user
+  become: yes
+  become_method: sudo
+  roles:
+    - { role: base, tags: 'base' }
+    - { role: php7, tags: 'php7' }
+    - { role: mariadb, tags: 'mariadb' }
+    - { role: nginx, tags: 'nginx' }
+    - { role: redis, tags: 'redis' }
+    - { role: nodejs, tags: 'nodejs' }
+    - { role: frostpos, tags: 'frostpos' }
