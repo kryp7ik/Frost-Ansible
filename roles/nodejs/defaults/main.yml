@@ -1,2 +1,6 @@
 ---
 # defaults file for roles/nodejs
+
+node_packages:
+  - 'nodejs'
+  - 'npm'

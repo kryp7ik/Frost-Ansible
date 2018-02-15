@@ -1,2 +1,24 @@
 ---
 # tasks file for roles/php7
+
+- name: installing php
+  yum:
+    name: "{{ item }}"
+    update_cache: yes
+    state: latest
+  with_items: "{{ php_packages }}"
+
+- name: check if composer is already installed
+  stat:
+    path: '/usr/local/bin/composer'
+  register: composer_check
+
+- name: download composer
+  shell: 'curl -sS https://getcomposer.org/installer | php'
+  args:
+    chdir: '/tmp'
+  when: composer_check.exists == False
+
+- name: install composer
+  command: 'mv /tmp/composer.phar /usr/local/bin/composer'
+  when: composer_check.exists == False

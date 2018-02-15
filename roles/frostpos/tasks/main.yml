@@ -3,7 +3,7 @@
 
 - name: create default site configurations
   template:
-    src: "frost-vhost.conf.j2"
+    src: "frost-vhost-aws.conf.j2"
     dest: "/etc/nginx/sites-available/{{ pos_domain }}.conf"
     mode: 0644
 
@@ -32,8 +32,26 @@
     group: '{{ group }}'
     mode: 0644
 
+- name: creating env file
+  template:
+    src: 'env.j2'
+    dest: '{{ site_root }}/.env'
+    owner: '{{ user }}'
+    group: '{{ group }}'
+    mode: 0644
+
+- name: creating cache directory
+  command: 'mkdir bootstrap/cache && touch bootstrap/cache/services.php'
+  args:
+    chdir: '{{ site_root }}'
+
 - name: running composer install and npm install
   command: 'composer install && npm install'
+  args:
+    chdir: '{{ site_root }}'
+
+- name: publishing Laravel vendor files
+  command: 'php artisan vendor:publish'
   args:
     chdir: '{{ site_root }}'
 
@@ -43,12 +61,17 @@
   command: 'find {{ site_root }} -type d -exec chmod 755 {} \;'
   command: 'chmod -R ug+rwx {{ site_root }}/storage {{ site_root }}/bootstrap/cache'
 
-- name: creating env file
-  template:
-    src: 'env.j2'
-    dest: '{{ site_root }}/.env'
-    owner: '{{ user }}'
-    group: '{{ group }}'
-    mode: 0660
-
 - name: starting nodejs socket server with pm2
+  command: 'pm2 start socket.js'
+  args:
+    chdir: '{{ site_root }}'
+
+- name: migrating database tables
+  command: 'php artisan migrate'
+  args:
+    chdir: '{{ site_root }}'
+
+- name: seeding database
+  command: 'php artisan db:seed'
+  args:
+    chdir: '{{ site_root }}'

@@ -1,2 +1,19 @@
 ---
 # defaults file for roles/php7
+php_version: 'php71'
+php_packages:
+  - '{{ php_version }}'
+  - '{{ php_version }}-cli'
+  - '{{ php_version }}-common'
+  - '{{ php_version }}-fpm'
+  - '{{ php_version }}-gd'
+  - '{{ php_version }}-imap'
+  - '{{ php_version }}-intl'
+  - '{{ php_version }}-json'
+  - '{{ php_version }}-mbstring'
+  - '{{ php_version }}-mcrypt'
+  - '{{ php_version }}-mysqlnd'
+  - '{{ php_version }}-pdo'
+  - '{{ php_version }}-pecl-memcached'
+  - '{{ php_version }}-redis'
+  - '{{ php_version }}-xml'

@@ -6,6 +6,33 @@ frost_version: '1.0'
 pos_domain: 'frostpos.com'
 site_root: "/var/www/{{ pos_domain }}"
 
+# Pin number used to allow certain discounts and other features for logged in employees
+manager_pin: 1337
+
 # User and Group for file ownership
 user: 'frost'
 group: 'frost'
+
+app_debug: 'true'
+app_log_level: 'debug'
+
+queue_driver: 'sync'
+cache_driver: 'file'
+session_driver: 'file'
+
+db_connection: 'mysql'
+db_host: '127.0.0.1'
+db_database: 'frost'
+db_username: 'frost'
+db_password: 'password'
+
+redis_host: '127.0.0.1'
+redis_password: 'null'
+redis_port: 6379
+
+mail_driver: 'smtp'
+mail_host: 'smtp.gmail.com'
+mail_port: 587
+mail_username: 'user@gmail.com'
+mail_password: 'password'
+mail_encryption: 'tls'

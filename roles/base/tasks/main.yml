@@ -11,6 +11,7 @@
     - 'libselinux-python'
     - 'libsemanage-python'
     - 'epel-release'
+    - 'git'
   tags: ['install']
 
 - name: upgrade all packages
